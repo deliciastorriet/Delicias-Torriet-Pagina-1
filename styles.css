@@ -1,0 +1,423 @@
+/* Delicias Torriet - Estilos Modernos */
+:root {
+  --turquesa: #40E0D0;
+  --turquesa-dark: #20B2AA;
+  --celeste: #87CEEB;
+  --celeste-light: #B0E0E6;
+  --naranja: #FF6B35;
+  --blanco: #FFFFFF;
+  --gris-claro: #F8F9FA;
+  --gris-medio: #6C757D;
+  --gris-oscuro: #343A40;
+  --sombra: rgba(0, 0, 0, 0.1);
+  --sombra-suave: rgba(64, 224, 208, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, var(--gris-claro) 0%, var(--celeste-light) 100%);
+  color: var(--gris-oscuro);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Wizard Container */
+.wizard-container {
+  background: var(--blanco);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px var(--sombra);
+  overflow: hidden;
+  min-height: 600px;
+  position: relative;
+}
+
+/* Progress Bar */
+.progress-bar {
+  background: var(--gris-claro);
+  height: 4px;
+  position: relative;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--turquesa), var(--celeste));
+  height: 100%;
+  transition: width 0.5s ease;
+  border-radius: 2px;
+}
+
+/* Steps */
+.step {
+  display: none;
+  padding: 40px 30px;
+  animation: fadeIn 0.5s ease;
+}
+
+.step.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Step 1 - Welcome */
+.welcome-step {
+  text-align: center;
+  padding: 60px 30px;
+}
+
+.welcome-logo {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.welcome-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--turquesa-dark);
+  margin-bottom: 10px;
+}
+
+.welcome-subtitle {
+  font-size: 1.1rem;
+  color: var(--gris-medio);
+  margin-bottom: 40px;
+}
+
+/* Step 2 - Products */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.product-card {
+  background: var(--gris-claro);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px var(--sombra-suave);
+}
+
+.product-card.selected {
+  border-color: var(--turquesa);
+  background: linear-gradient(135deg, var(--turquesa), var(--celeste));
+}
+
+.product-card.selected .product-name,
+.product-card.selected .product-price {
+  color: var(--blanco);
+}
+
+.product-image {
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.product-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gris-oscuro);
+  margin-bottom: 5px;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--naranja);
+}
+
+.product-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--turquesa);
+  color: var(--blanco);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.qty-btn:hover {
+  background: var(--turquesa-dark);
+  transform: scale(1.1);
+}
+
+.qty-display {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Step 3 - Summary */
+.summary-card {
+  background: var(--gris-claro);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.summary-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--turquesa-dark);
+  margin-bottom: 15px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--celeste-light);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-total {
+  background: linear-gradient(135deg, var(--turquesa), var(--celeste));
+  color: var(--blanco);
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.total-label {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.total-amount {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+/* Step 4 - Form */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gris-medio);
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--gris-claro);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: var(--gris-claro);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--turquesa);
+  background: var(--blanco);
+  box-shadow: 0 0 0 3px var(--sombra-suave);
+}
+
+.toggle-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.toggle-option {
+  flex: 1;
+}
+
+.toggle-option input[type="radio"] {
+  display: none;
+}
+
+.toggle-label {
+  display: block;
+  padding: 14px;
+  border: 2px solid var(--gris-claro);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: var(--gris-medio);
+}
+
+.toggle-option input[type="radio"]:checked + .toggle-label {
+  border-color: var(--turquesa);
+  background: linear-gradient(135deg, var(--turquesa), var(--celeste));
+  color: var(--blanco);
+}
+
+/* Step 5 - Payment */
+.payment-card {
+  background: linear-gradient(135deg, var(--turquesa), var(--celeste));
+  color: var(--blanco);
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.payment-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.payment-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.payment-label {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--turquesa), var(--celeste));
+  color: var(--blanco);
+  box-shadow: 0 4px 15px var(--sombra-suave);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--sombra-suave);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: var(--gris-claro);
+  color: var(--gris-medio);
+  margin-top: 10px;
+}
+
+.btn-secondary:hover {
+  background: var(--gris-medio);
+  color: var(--blanco);
+}
+
+/* Step 6 - Confirmation */
+.confirmation-step {
+  text-align: center;
+  padding: 60px 30px;
+}
+
+.success-icon {
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+.confirmation-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--turquesa-dark);
+  margin-bottom: 10px;
+}
+
+.order-id-display {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--naranja);
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--gris-claro);
+  border-radius: 16px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+
+  .wizard-container {
+    border-radius: 16px;
+    min-height: 500px;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-image {
+    height: 150px;
+  }
+
+  .step {
+    padding: 30px 20px;
+  }
+}

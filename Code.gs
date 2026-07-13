@@ -40,7 +40,8 @@ function doGet(e) {
  * Sirve la vista pública de pedidos
  */
 function servirVistaPublica() {
-  const html = HtmlService.createHtmlOutputFromFile('public')
+  const template = HtmlService.createTemplateFromFile('public');
+  const html = template.evaluate()
     .setTitle('Delicias Torriet - Pedidos')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
@@ -57,12 +58,20 @@ function servirVistaAdmin() {
       .setTitle('Acceso Denegado');
   }
   
-  const html = HtmlService.createHtmlOutputFromFile('admin')
+  const template = HtmlService.createTemplateFromFile('admin');
+  const html = template.evaluate()
     .setTitle('Delicias Torriet - Panel Admin')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
   
   return html;
+}
+
+/**
+ * Incluye un archivo HTML en el template
+ */
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
 /**

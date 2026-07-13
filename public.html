@@ -3,668 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delicias Torriet - Empanadas Artesanales</title>
+  <title>Delicias Torriet - Pedidos</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --primary: #2E7D32;
-      --secondary: #FF6F00;
-      --accent: #00BCD4;
-      --light: #FFF9E6;
-      --dark: #1B5E20;
-      --text: #333;
-      --white: #fff;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--light);
-      color: var(--text);
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Header */
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--dark));
-      color: var(--white);
-      padding: 80px 0;
-      text-align: center;
-    }
-
-    header h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    header p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      margin-bottom: 30px;
-    }
-
-    .header-buttons {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 15px 30px;
-      border: none;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: var(--secondary);
-      color: var(--white);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      border: 2px solid var(--white);
-      color: var(--white);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    }
-
-    /* Brand Block */
-    .brand-block {
-      background: var(--accent);
-      color: var(--white);
-      padding: 40px 0;
-      text-align: center;
-    }
-
-    .brand-block p {
-      font-size: 1.3rem;
-      font-weight: 500;
-    }
-
-    /* Products Section */
-    #productos {
-      padding: 60px 0;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 40px;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
-    }
-
-    .product-card {
-      background: var(--white);
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .product-image {
-      height: 200px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--white);
-      font-size: 3rem;
-      font-weight: bold;
-    }
-
-    .product-info {
-      padding: 20px;
-    }
-
-    .product-name {
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: var(--primary);
-    }
-
-    .product-price {
-      font-size: 1.5rem;
-      color: var(--secondary);
-      font-weight: 700;
-      margin-bottom: 15px;
-    }
-
-    .stepper {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .stepper button {
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 50%;
-      background: var(--primary);
-      color: var(--white);
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .stepper button:hover {
-      background: var(--dark);
-    }
-
-    .stepper span {
-      font-size: 1.2rem;
-      font-weight: 600;
-      min-width: 30px;
-      text-align: center;
-    }
-
-    /* Order Summary */
-    .order-summary {
-      background: var(--white);
-      padding: 30px;
-      border-radius: 15px;
-      margin: 40px auto;
-      max-width: 600px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      font-size: 1.1rem;
-    }
-
-    .summary-total {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      border-top: 2px solid var(--primary);
-      padding-top: 15px;
-    }
-
-    .btn-continue {
-      width: 100%;
-      margin-top: 20px;
-      background: var(--secondary);
-      color: var(--white);
-    }
-
-    .btn-continue:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    /* Form */
-    #formulario {
-      padding: 60px 0;
-    }
-
-    .form-container {
-      background: var(--white);
-      padding: 40px;
-      border-radius: 15px;
-      max-width: 600px;
-      margin: 0 auto;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .form-group {
-      margin-bottom: 25px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    .toggle-container {
-      display: flex;
-      gap: 20px;
-    }
-
-    .toggle-option {
-      flex: 1;
-    }
-
-    .toggle-option input[type="radio"] {
-      display: none;
-    }
-
-    .toggle-option label {
-      display: block;
-      padding: 15px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .toggle-option input[type="radio"]:checked + label {
-      border-color: var(--primary);
-      background: var(--primary);
-      color: var(--white);
-    }
-
-    /* Payment Section */
-    .payment-section {
-      background: var(--light);
-      padding: 40px;
-      border-radius: 15px;
-      margin-bottom: 30px;
-    }
-
-    .payment-info {
-      background: var(--white);
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border-left: 4px solid var(--secondary);
-    }
-
-    .yappy-number {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--secondary);
-    }
-
-    /* Confirm Button */
-    .btn-confirm {
-      width: 100%;
-      padding: 20px;
-      font-size: 1.2rem;
-      background: var(--primary);
-      color: var(--white);
-    }
-
-    .btn-confirm:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    /* Confirmation */
-    .confirmation {
-      display: none;
-      text-align: center;
-      padding: 60px 0;
-    }
-
-    .confirmation h2 {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 20px;
-    }
-
-    .order-id {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--secondary);
-      margin: 20px 0;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
-
-      .products-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .form-container {
-        padding: 20px;
-      }
-    }
+    <?!= include('styles'); ?>
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="container">
-      <h1>🥟 Delicias Torriet</h1>
-      <p>Empanadas artesanales con sabor tropical</p>
-      <div class="header-buttons">
-        <a href="#productos" class="btn btn-primary">Pedir ahora</a>
-        <a href="#productos" class="btn btn-secondary">Ver menú</a>
+  <div class="container">
+    <div class="wizard-container">
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
       </div>
-    </div>
-  </header>
 
-  <!-- Brand Block -->
-  <section class="brand-block">
-    <div class="container">
-      <p>Tradición casera con un toque caribeño, hecho con amor en cada empanada</p>
-    </div>
-  </section>
-
-  <!-- Products -->
-  <section id="productos">
-    <div class="container">
-      <h2 class="section-title">Nuestras Empanadas</h2>
-      <div class="products-grid" id="productsGrid">
-        <!-- Products will be rendered here -->
-      </div>
-    </div>
-  </section>
-
-  <!-- Order Summary -->
-  <section class="container">
-    <div class="order-summary">
-      <h3>Resumen del Pedido</h3>
-      <div class="summary-row">
-        <span>Unidades totales:</span>
-        <span id="totalUnits">0</span>
-      </div>
-      <div class="summary-row summary-total">
-        <span>Total:</span>
-        <span id="totalPrice">$0.00</span>
-      </div>
-      <button class="btn btn-continue" id="btnContinue" disabled onclick="scrollToForm()">
-        Continuar pedido
-      </button>
-    </div>
-  </section>
-
-  <!-- Form -->
-  <section id="formulario">
-    <div class="container">
-      <h2 class="section-title">Completa tu Pedido</h2>
-      <div class="form-container">
-        <div class="form-group">
-          <label for="nombre">Nombre completo *</label>
-          <input type="text" id="nombre" required>
+      <!-- Step 1: Welcome -->
+      <div class="step active" id="step1">
+        <div class="welcome-step">
+          <div class="welcome-logo">🥟</div>
+          <h1 class="welcome-title">Delicias Torriet</h1>
+          <p class="welcome-subtitle">Empanadas artesanales con sabor tropical</p>
+          <button class="btn btn-primary" onclick="nextStep()">Comenzar Pedido</button>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label for="telefono">Teléfono/WhatsApp *</label>
-          <input type="tel" id="telefono" required>
+      <!-- Step 2: Products -->
+      <div class="step" id="step2">
+        <h2 class="summary-title" style="text-align: center; margin-bottom: 20px;">Selecciona tus Empanadas</h2>
+        <div class="products-grid" id="productsGrid">
+          <!-- Products rendered by JS -->
         </div>
+        <button class="btn btn-primary" onclick="nextStep()">Continuar</button>
+        <button class="btn btn-secondary" onclick="prevStep()">Atrás</button>
+      </div>
 
+      <!-- Step 3: Summary -->
+      <div class="step" id="step3">
+        <h2 class="summary-title" style="text-align: center; margin-bottom: 20px;">Resumen del Pedido</h2>
+        <div class="summary-card">
+          <div id="summaryList">
+            <!-- Summary items rendered by JS -->
+          </div>
+        </div>
+        <div class="summary-total">
+          <p class="total-label">Total a pagar</p>
+          <p class="total-amount" id="totalAmount">$0.00</p>
+        </div>
+        <button class="btn btn-primary" onclick="nextStep()" style="margin-top: 20px;">Continuar</button>
+        <button class="btn btn-secondary" onclick="prevStep()">Atrás</button>
+      </div>
+
+      <!-- Step 4: Form -->
+      <div class="step" id="step4">
+        <h2 class="summary-title" style="text-align: center; margin-bottom: 20px;">Tus Datos</h2>
         <div class="form-group">
-          <label>Tipo de entrega *</label>
-          <div class="toggle-container">
+          <label class="form-label">Nombre completo *</label>
+          <input type="text" class="form-input" id="nombre" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono/WhatsApp *</label>
+          <input type="tel" class="form-input" id="telefono" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de entrega *</label>
+          <div class="toggle-group">
             <div class="toggle-option">
               <input type="radio" id="recoger" name="tipoEntrega" value="Recoger" checked onchange="toggleDireccion()">
-              <label for="recoger">🏪 Recoger</label>
+              <label class="toggle-label" for="recoger">🏪 Recoger</label>
             </div>
             <div class="toggle-option">
               <input type="radio" id="delivery" name="tipoEntrega" value="Delivery" onchange="toggleDireccion()">
-              <label for="delivery">🚗 Delivery</label>
+              <label class="toggle-label" for="delivery">🚗 Delivery</label>
             </div>
           </div>
         </div>
-
         <div class="form-group" id="direccionGroup" style="display: none;">
-          <label for="direccion">Dirección de entrega</label>
-          <input type="text" id="direccion">
+          <label class="form-label">Dirección de entrega</label>
+          <input type="text" class="form-input" id="direccion">
         </div>
-
         <div class="form-group">
-          <label for="fechaEntrega">Fecha y hora deseada</label>
-          <input type="datetime-local" id="fechaEntrega">
+          <label class="form-label">Fecha y hora deseada</label>
+          <input type="datetime-local" class="form-input" id="fechaEntrega">
         </div>
-
         <div class="form-group">
-          <label for="notas">Notas adicionales</label>
-          <textarea id="notas" rows="3"></textarea>
+          <label class="form-label">Notas adicionales</label>
+          <input type="text" class="form-input" id="notas" placeholder="Ej: Sin cebolla, bien doradas...">
         </div>
+        <button class="btn btn-primary" onclick="nextStep()">Continuar</button>
+        <button class="btn btn-secondary" onclick="prevStep()">Atrás</button>
+      </div>
 
-        <!-- Payment -->
-        <div class="payment-section">
-          <h3>💳 Método de Pago</h3>
-          <div class="payment-info">
-            <p>Paga via Yappy al número:</p>
-            <p class="yappy-number">6641-8825</p>
-          </div>
-          <div class="form-group">
-            <label for="referencia">Referencia de pago</label>
-            <input type="text" id="referencia" placeholder="Últimos 4 dígitos o referencia">
-          </div>
+      <!-- Step 5: Payment -->
+      <div class="step" id="step5">
+        <h2 class="summary-title" style="text-align: center; margin-bottom: 20px;">Método de Pago</h2>
+        <div class="payment-card">
+          <div class="payment-icon">💳</div>
+          <p class="payment-label">Paga via Yappy al número:</p>
+          <p class="payment-number">6641-8825</p>
         </div>
+        <div class="form-group">
+          <label class="form-label">Referencia de pago *</label>
+          <input type="text" class="form-input" id="referencia" placeholder="Últimos 4 dígitos o referencia">
+        </div>
+        <button class="btn btn-primary" onclick="confirmarPedido()">Confirmar Pedido</button>
+        <button class="btn btn-secondary" onclick="prevStep()">Atrás</button>
+      </div>
 
-        <button class="btn btn-confirm" id="btnConfirm" onclick="confirmarPedido()">
-          Confirmar pedido
-        </button>
+      <!-- Step 6: Confirmation -->
+      <div class="step" id="step6">
+        <div class="confirmation-step">
+          <div class="success-icon">✅</div>
+          <h2 class="confirmation-title">¡Pedido Confirmado!</h2>
+          <p style="color: #6C757D; margin-bottom: 20px;">Tu pedido ha sido recibido exitosamente</p>
+          <div class="order-id-display" id="orderIdDisplay"></div>
+          <p style="margin-top: 20px; color: #6C757D;">Total del pedido: <span id="finalTotal" style="font-weight: 700; color: #FF6B35;">$0.00</span></p>
+          <button class="btn btn-primary" onclick="hacerOtroPedido()" style="margin-top: 30px;">Hacer otro pedido</button>
+        </div>
       </div>
     </div>
-  </section>
-
-  <!-- Confirmation -->
-  <section class="confirmation" id="confirmation">
-    <div class="container">
-      <h2>¡Pedido Confirmado!</h2>
-      <p>Tu pedido ha sido recibido exitosamente</p>
-      <p class="order-id" id="orderId"></p>
-      <div class="order-summary">
-        <div class="summary-row">
-          <span>Total del pedido:</span>
-          <span id="finalTotal"></span>
-        </div>
-      </div>
-      <button class="btn btn-primary" onclick="hacerOtroPedido()">Hacer otro pedido</button>
-    </div>
-  </section>
+  </div>
 
   <script>
-    // Product catalog
-    const productos = [
-      { id: 'pollo', nombre: 'Pollo', precio: 1.00, marca: '••• (vertical)' },
-      { id: 'carne', nombre: 'Carne', precio: 1.00, marca: '••• (horizontal)' },
-      { id: 'bacalao', nombre: 'Bacalao', precio: 1.50, marca: '• (1 punto)' },
-      { id: 'pina', nombre: 'Piña', precio: 1.50, marca: 'sin puntos' },
-      { id: 'kekies', nombre: 'Kekies', precio: 0.90, marca: 'producto aparte' }
-    ];
-
-    // Cart state
-    let carrito = {};
-
-    // Initialize products
-    function initProducts() {
-      const grid = document.getElementById('productsGrid');
-      grid.innerHTML = productos.map(prod => `
-        <div class="product-card">
-          <div class="product-image">${prod.nombre.charAt(0)}</div>
-          <div class="product-info">
-            <h3 class="product-name">${prod.nombre}</h3>
-            <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">${prod.marca}</p>
-            <p class="product-price">$${prod.precio.toFixed(2)}</p>
-            <div class="stepper">
-              <button onclick="updateCantidad('${prod.id}', -1)">-</button>
-              <span id="qty-${prod.id}">0</span>
-              <button onclick="updateCantidad('${prod.id}', 1)">+</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // Update quantity
-    function updateCantidad(id, delta) {
-      if (!carrito[id]) carrito[id] = 0;
-      carrito[id] = Math.max(0, carrito[id] + delta);
-      document.getElementById(`qty-${id}`).textContent = carrito[id];
-      updateSummary();
-    }
-
-    // Update summary
-    function updateSummary() {
-      let totalUnits = 0;
-      let totalPrice = 0;
-
-      productos.forEach(prod => {
-        const qty = carrito[prod.id] || 0;
-        totalUnits += qty;
-        totalPrice += qty * prod.precio;
-      });
-
-      document.getElementById('totalUnits').textContent = totalUnits;
-      document.getElementById('totalPrice').textContent = `$${totalPrice.toFixed(2)}`;
-      document.getElementById('btnContinue').disabled = totalUnits === 0;
-    }
-
-    // Scroll to form
-    function scrollToForm() {
-      document.getElementById('formulario').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Toggle direccion field
-    function toggleDireccion() {
-      const isDelivery = document.getElementById('delivery').checked;
-      document.getElementById('direccionGroup').style.display = isDelivery ? 'block' : 'none';
-    }
-
-    // Confirm order
-    async function confirmarPedido() {
-      const nombre = document.getElementById('nombre').value.trim();
-      const telefono = document.getElementById('telefono').value.trim();
-      const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
-      const direccion = document.getElementById('direccion').value.trim();
-      const fechaEntrega = document.getElementById('fechaEntrega').value;
-      const notas = document.getElementById('notas').value.trim();
-      const referencia = document.getElementById('referencia').value.trim();
-
-      // Validation
-      if (!nombre || !telefono) {
-        alert('Por favor completa nombre y teléfono');
-        return;
-      }
-
-      if (tipoEntrega === 'Delivery' && !direccion) {
-        alert('Por favor ingresa la dirección de entrega');
-        return;
-      }
-
-      // Build order
-      const productosOrden = productos
-        .filter(p => carrito[p.id] > 0)
-        .map(p => ({
-          nombre: p.nombre,
-          cantidad: carrito[p.id],
-          precio: p.precio
-        }));
-
-      const total = productosOrden.reduce((sum, p) => sum + (p.cantidad * p.precio), 0);
-
-      const orderData = {
-        nombre,
-        telefono,
-        tipoEntrega,
-        direccion: tipoEntrega === 'Delivery' ? direccion : '',
-        fechaEntrega,
-        notas,
-        comprobante: referencia,
-        productos: productosOrden,
-        total
-      };
-
-      try {
-        const response = await fetch(window.location.href, {
-          method: 'POST',
-          body: JSON.stringify(orderData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          showConfirmation(result.idPedido, result.total);
-        } else {
-          alert('Error al procesar el pedido: ' + result.error);
-        }
-      } catch (error) {
-        alert('Error de conexión: ' + error.message);
-      }
-    }
-
-    // Show confirmation
-    function showConfirmation(id, total) {
-      document.getElementById('orderId').textContent = id;
-      document.getElementById('finalTotal').textContent = `$${total.toFixed(2)}`;
-      document.getElementById('confirmation').style.display = 'block';
-      document.getElementById('formulario').style.display = 'none';
-      document.getElementById('productos').style.display = 'none';
-      document.querySelector('.order-summary').style.display = 'none';
-      window.scrollTo(0, 0);
-    }
-
-    // Make another order
-    function hacerOtroPedido() {
-      carrito = {};
-      productos.forEach(p => {
-        carrito[p.id] = 0;
-        document.getElementById(`qty-${p.id}`).textContent = '0';
-      });
-      updateSummary();
-      
-      document.getElementById('nombre').value = '';
-      document.getElementById('telefono').value = '';
-      document.getElementById('direccion').value = '';
-      document.getElementById('fechaEntrega').value = '';
-      document.getElementById('notas').value = '';
-      document.getElementById('referencia').value = '';
-      
-      document.getElementById('confirmation').style.display = 'none';
-      document.getElementById('formulario').style.display = 'block';
-      document.getElementById('productos').style.display = 'block';
-      document.querySelector('.order-summary').style.display = 'block';
-      document.getElementById('recoger').checked = true;
-      toggleDireccion();
-    }
-
-    // Initialize
-    initProducts();
+    <?!= include('script'); ?>
   </script>
 </body>
 </html>
