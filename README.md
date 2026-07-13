@@ -55,7 +55,9 @@ Sistema web de pedidos para empanadas artesanales con backend en Google Apps Scr
 ```
 Delicias Torriet/
 ├── Code.gs          # Backend de Google Apps Script
-├── public.html      # Vista de clientes
+├── public.html      # Vista de clientes (wizard de 6 fases)
+├── styles.css       # Estilos modernos turquesa/celeste
+├── script.js        # Lógica del wizard y carrito
 ├── admin.html       # Panel de administración
 └── README.md        # Documentación
 ```
@@ -72,9 +74,11 @@ Delicias Torriet/
 
 ## 🎨 Diseño
 
-- **Colores:** Verde, amarillo, turquesa, naranja (tropical/caribeño)
-- **Tipografía:** Segoe UI, moderna y legible
+- **Colores:** Turquesa (#40E0D0), Celeste (#87CEEB), Naranja (#FF6B35) - Brand tropical/caribeño
+- **Tipografía:** Inter, moderna y legible
 - **Responsive:** Mobile-first en vista pública, desktop-friendly en admin
+- **Wizard:** Sistema de 6 fases para flujo de pedido optimizado
+- **Imágenes:** Fotos reales de empanadas integradas en catálogo
 
 ## 📝 Notas
 
