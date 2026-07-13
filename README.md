@@ -56,8 +56,8 @@ Sistema web de pedidos para empanadas artesanales con backend en Google Apps Scr
 Delicias Torriet/
 ├── Code.gs          # Backend de Google Apps Script
 ├── public.html      # Vista de clientes (wizard de 6 fases)
-├── styles.css       # Estilos modernos turquesa/celeste
-├── script.js        # Lógica del wizard y carrito
+├── styles.html      # Estilos modernos turquesa/celeste (con etiquetas <style>)
+├── script.html      # Lógica del wizard y carrito (con etiquetas <script>)
 ├── admin.html       # Panel de administración
 └── README.md        # Documentación
 ```
@@ -92,8 +92,10 @@ Delicias Torriet/
 1. Abrir https://script.google.com/
 2. Crear nuevo proyecto
 3. Copiar contenido de Code.gs al editor
-4. Crear archivos public.html y admin.html
+4. Crear archivos: public.html, styles.html, script.html, admin.html
 5. Implementar como "Aplicación web"
 6. Ejecutar como: "Yo"
 7. Quién tiene acceso: "Cualquier persona"
 8. Copiar URL generada
+
+**Nota importante:** Los archivos CSS y JS deben ser archivos HTML con etiquetas `<style>` y `<script>` respectivamente para que Google Apps Script pueda incluirlos correctamente con la función `include()`.
