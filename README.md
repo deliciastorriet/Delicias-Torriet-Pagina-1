@@ -2,10 +2,11 @@
 
 Sistema web de pedidos para empanadas artesanales con backend en Google Apps Script y Google Sheets.
 
-## 🚀 URL del Despliegue
+## 🚀 URLs
 
-- **Vista Pública (Clientes):** https://script.google.com/macros/s/AKfycbzA5pjNOI-oMe4fjqXUGnjrd1904Nv0B7oi9yJ8PYhuPMGcK0yiRrge92Bw5GrzKYYR/exec
-- **Vista Admin:** https://script.google.com/macros/s/AKfycbzA5pjNOI-oMe4fjqXUGnjrd1904Nv0B7oi9yJ8PYhuPMGcK0yiRrge92Bw5GrzKYYR/exec?view=admin
+- **Frontend (Clientes):** `https://<usuario>.github.io/<repo>/public.html`
+- **Backend (Apps Script):** `https://script.google.com/macros/s/AKfycbybdkKQFsIqDZfVf3p35xu5Le4eTZkjGlWZF0rQIZ06Gh4URt2sKE_Uh3i7qM0eMjfG/exec`
+- **Vista Admin:** `https://script.google.com/macros/s/AKfycbybdkKQFsIqDZfVf3p35xu5Le4eTZkjGlWZF0rQIZ06Gh4URt2sKE_Uh3i7qM0eMjfG/exec?view=admin`
 
 ## 📋 Características
 
@@ -89,13 +90,35 @@ Delicias Torriet/
 
 ## 🚀 Despliegue
 
-1. Abrir https://script.google.com/
-2. Crear nuevo proyecto
-3. Copiar contenido de Code.gs al editor
-4. Crear archivos: public.html, styles.html, script.html, admin.html
-5. Implementar como "Aplicación web"
-6. Ejecutar como: "Yo"
-7. Quién tiene acceso: "Cualquier persona"
-8. Copiar URL generada
+### Frontend (GitHub Pages)
 
-**Nota importante:** Los archivos CSS y JS deben ser archivos HTML con etiquetas `<style>` y `<script>` respectivamente para que Google Apps Script pueda incluirlos correctamente con la función `include()`.
+1. Crear un repositorio en GitHub (si no existe)
+2. Subir estos archivos a la raíz del repositorio:
+   - `public.html`
+   - `styles.css`
+   - `script.js`
+   - Todas las imágenes (`.jpeg`, `.png`)
+3. En GitHub: Settings → Pages → Source: rama `main` / carpeta `root`
+4. Guardar y esperar ~1 minuto. La URL será: `https://<usuario>.github.io/<repo>/public.html`
+
+### Backend (Google Apps Script)
+
+1. Abrir https://script.google.com/ y crear un proyecto nuevo
+2. Pegar el contenido de `Code.gs` en el editor
+3. Crear archivo HTML llamado `admin` (sin extensión `.html`) y pegar el contenido de `admin.html`
+4. Implementar como "Aplicación web"
+5. Ejecutar como: "Yo"
+6. Quién tiene acceso: **"Cualquier persona"** (importante para que CORS funcione)
+7. Copiar la URL generada
+8. Pegar esa URL en `public.html` en la constante `APPS_SCRIPT_URL` (línea ~1838)
+
+### URL actual del backend
+
+`https://script.google.com/macros/s/AKfycbybdkKQFsIqDZfVf3p35xu5Le4eTZkjGlWZF0rQIZ06Gh4URt2sKE_Uh3i7qM0eMjfG/exec`
+
+### Notas importantes
+
+- El frontend se sirve desde GitHub Pages y envía los pedidos al backend de Apps Script via POST.
+- Apps Script responde automáticamente con cabeceras CORS cuando el despliegue es "Cualquier persona".
+- El fetch en `public.html` **no debe** incluir `Content-Type: application/json` para evitar preflight OPTIONS (que Apps Script no soporta). El body se envía como `text/plain` automáticamente.
+- El panel admin se accede directamente desde la URL del Apps Script con `?view=admin`.

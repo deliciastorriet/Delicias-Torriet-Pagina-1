@@ -14,11 +14,13 @@ const productos = [
 let carrito = {};
 let currentStep = 1;
 const totalSteps = 6;
+let isAnimating = false;
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
   initProducts();
   updateProgress();
+  updateStepIndicators();
 });
 
 // Initialize products
@@ -94,7 +96,7 @@ function updateSummary() {
     const productosOrden = productos.filter(p => carrito[p.id] > 0);
     
     if (productosOrden.length === 0) {
-      summaryList.innerHTML = '<p style="text-align: center; color: #6C757D;">No hay productos seleccionados</p>';
+      summaryList.innerHTML = '<p style="text-align: center; color: var(--gris-medio);">No hay productos seleccionados</p>';
     } else {
       summaryList.innerHTML = productosOrden.map(p => `
         <div class="summary-item">
@@ -120,40 +122,64 @@ function updateSummary() {
 
 // Navigation
 function nextStep() {
-  if (currentStep < totalSteps) {
-    // Validate current step before proceeding
-    if (!validateStep(currentStep)) {
-      return;
-    }
-    
-    currentStep++;
-    showStep(currentStep);
-    updateProgress();
-    
-    // Update summary when reaching step 3
-    if (currentStep === 3) {
-      updateSummary();
-    }
+  if (isAnimating || currentStep >= totalSteps) return;
+  if (!validateStep(currentStep)) return;
+
+  isAnimating = true;
+  const oldStep = currentStep;
+  currentStep++;
+
+  const oldEl = document.getElementById(`step${oldStep}`);
+  const newEl = document.getElementById(`step${currentStep}`);
+
+  if (oldEl) {
+    oldEl.classList.remove('active');
+    oldEl.classList.add('exiting');
   }
+
+  setTimeout(() => {
+    if (oldEl) oldEl.classList.remove('exiting');
+    if (newEl) newEl.classList.add('active');
+    updateProgress();
+    updateStepIndicators();
+    if (currentStep === 3) updateSummary();
+    isAnimating = false;
+  }, 350);
 }
 
 function prevStep() {
-  if (currentStep > 1) {
-    currentStep--;
-    showStep(currentStep);
-    updateProgress();
+  if (isAnimating || currentStep <= 1) return;
+
+  isAnimating = true;
+  const oldStep = currentStep;
+  currentStep--;
+
+  const oldEl = document.getElementById(`step${oldStep}`);
+  const newEl = document.getElementById(`step${currentStep}`);
+
+  if (oldEl) {
+    oldEl.classList.remove('active');
+    oldEl.classList.add('exiting-back');
   }
+
+  setTimeout(() => {
+    if (oldEl) oldEl.classList.remove('exiting-back');
+    if (newEl) {
+      newEl.classList.add('entering-back');
+      setTimeout(() => newEl.classList.remove('entering-back'), 450);
+    }
+    updateProgress();
+    updateStepIndicators();
+    isAnimating = false;
+  }, 350);
 }
 
 function showStep(step) {
-  // Hide all steps
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-  
-  // Show current step
+  document.querySelectorAll('.step').forEach(s => {
+    s.classList.remove('active', 'exiting', 'exiting-back', 'entering-back');
+  });
   const stepElement = document.getElementById(`step${step}`);
-  if (stepElement) {
-    stepElement.classList.add('active');
-  }
+  if (stepElement) stepElement.classList.add('active');
 }
 
 function updateProgress() {
@@ -164,13 +190,39 @@ function updateProgress() {
   }
 }
 
+function updateStepIndicators() {
+  const dots = document.querySelectorAll('.step-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.remove('active', 'completed');
+    if (i + 1 < currentStep) dot.classList.add('completed');
+    else if (i + 1 === currentStep) dot.classList.add('active');
+  });
+}
+
+// Toast notification
+function showToast(message) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1E293B;color:#fff;padding:14px 24px;border-radius:14px;font-size:0.9rem;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);max-width:90%;text-align:center;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.style.transform = 'translateX(-50%) translateY(-100px)';
+  }, 3000);
+}
+
 // Validate step
 function validateStep(step) {
   switch(step) {
     case 2:
       const { totalUnits } = calculateTotals();
       if (totalUnits === 0) {
-        alert('Por favor selecciona al menos un producto');
+        showToast('Por favor selecciona al menos un producto');
         return false;
       }
       return true;
@@ -180,14 +232,14 @@ function validateStep(step) {
       const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked')?.value;
       
       if (!nombre || !telefono) {
-        alert('Por favor completa nombre y teléfono');
+        showToast('Por favor completa nombre y teléfono');
         return false;
       }
       
       if (tipoEntrega === 'Delivery') {
         const direccion = document.getElementById('direccion')?.value.trim();
         if (!direccion) {
-          alert('Por favor ingresa la dirección de entrega');
+          showToast('Por favor ingresa la dirección de entrega');
           return false;
         }
       }
@@ -195,7 +247,7 @@ function validateStep(step) {
     case 5:
       const referencia = document.getElementById('referencia')?.value.trim();
       if (!referencia) {
-        alert('Por favor ingresa la referencia de pago');
+        showToast('Por favor ingresa la referencia de pago');
         return false;
       }
       return true;
@@ -257,10 +309,10 @@ async function confirmarPedido() {
     if (result.success) {
       showConfirmation(result.idPedido, result.total);
     } else {
-      alert('Error al procesar el pedido: ' + result.error);
+      showToast('Error al procesar el pedido: ' + result.error);
     }
   } catch (error) {
-    alert('Error de conexión: ' + error.message);
+    showToast('Error de conexión: ' + error.message);
   }
 }
 
@@ -279,6 +331,7 @@ function showConfirmation(id, total) {
   currentStep = 6;
   showStep(6);
   updateProgress();
+  updateStepIndicators();
 }
 
 // Make another order
@@ -317,5 +370,6 @@ function hacerOtroPedido() {
   currentStep = 1;
   showStep(1);
   updateProgress();
+  updateStepIndicators();
 }
 </script>

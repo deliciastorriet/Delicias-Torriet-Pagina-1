@@ -12,41 +12,30 @@ const COL_NOMBRE = 2;
 const COL_TEL = 3;
 const COL_PRODUCTO = 4;
 const COL_CANTIDAD = 5;
-const COL_UDS = 6;
-const COL_P_UNIT = 7;
-const COL_TOTAL = 8;
-const COL_TIPO_ENTREGA = 9;
-const COL_DIRECCION = 10;
-const COL_FECHA_ENTREGA = 11;
-const COL_NOTAS = 12;
-const COL_ESTADO_PAGO = 13;
-const COL_ESTADO_PEDIDO = 14;
-const COL_COMPROBANTE = 15;
+const COL_P_UNIT = 6;
+const COL_TOTAL = 7;
+const COL_TIPO_ENTREGA = 8;
+const COL_DIRECCION = 9;
+const COL_FECHA_ENTREGA = 10;
+const COL_NOTAS = 11;
+const COL_ESTADO_PAGO = 12;
+const COL_ESTADO_PEDIDO = 13;
+const COL_COMPROBANTE = 14;
+const COL_NOTA_PRODUCTO = 15;
 
 /**
  * Sirve la vista pública o admin según parámetro view
  */
 function doGet(e) {
   const view = e.parameter.view;
-  
+
   if (view === 'admin') {
     return servirVistaAdmin();
   }
-  
-  return servirVistaPublica();
-}
 
-/**
- * Sirve la vista pública de pedidos
- */
-function servirVistaPublica() {
-  const template = HtmlService.createTemplateFromFile('public');
-  const html = template.evaluate()
-    .setTitle('Delicias Torriet - Pedidos')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  
-  return html;
+  // Frontend está en GitHub Pages — redirigir allí
+  return HtmlService.createHtmlOutput('<meta http-equiv="refresh" content="0;url=https://deliciastorriet.github.io/Delicias-Torriet-Pagina-1/public.html">')
+    .setTitle('Delicias Torriet');
 }
 
 /**
@@ -57,13 +46,13 @@ function servirVistaAdmin() {
     return HtmlService.createHtmlOutput('Acceso denegado. Email no autorizado.')
       .setTitle('Acceso Denegado');
   }
-  
+
   const template = HtmlService.createTemplateFromFile('admin');
   const html = template.evaluate()
     .setTitle('Delicias Torriet - Panel Admin')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-  
+
   return html;
 }
 
@@ -79,46 +68,78 @@ function include(filename) {
  */
 function doPost(e) {
   try {
+    if (!e || !e.postData || !e.postData.contents) {
+      throw new Error('No se recibieron datos en la solicitud');
+    }
+
     const data = JSON.parse(e.postData.contents);
-    
+
+    if (!data || !Array.isArray(data.productos) || data.productos.length === 0) {
+      throw new Error('El pedido no contiene productos');
+    }
+
+    if (!data.nombre || !data.telefono) {
+      throw new Error('Faltan datos del cliente');
+    }
+
     // Generar ID de pedido único
     const idPedido = generarIdPedido();
     const fecha = new Date().toISOString();
-    
+
     const sheet = getSheet();
     const productos = data.productos;
-    
+    let totalPedido = 0;
+
     // Insertar una fila por producto
     productos.forEach(prod => {
       if (prod.cantidad > 0) {
+        const isPack = prod.tipo === 'pack';
+        const precio = prod.precio || 0;
+        const qty = prod.cantidad;
+
+        let precioUnit = 0;
+        let subtotal = 0;
+
+        if (isPack) {
+          // El precio del payload ya es el total del pack
+          subtotal = precio;
+          precioUnit = qty > 0 ? precio / qty : 0;
+        } else {
+          // Individuales y fee: precio unitario, cantidad * precio
+          precioUnit = precio;
+          subtotal = qty * precio;
+        }
+
+        totalPedido += subtotal;
+
         const fila = [
           fecha,
           idPedido,
-          data.nombre,
-          data.telefono,
+          data.nombre || '',
+          data.telefono || '',
           prod.nombre,
-          prod.cantidad,
-          prod.cantidad,
-          prod.precio,
-          prod.cantidad * prod.precio,
-          data.tipoEntrega,
+          qty,
+          precioUnit,
+          subtotal,
+          data.tipoEntrega || '',
           data.direccion || '',
           data.fechaEntrega || '',
           data.notas || '',
           'Pendiente',
           'Recibido',
-          data.comprobante || ''
+          data.comprobante || '',
+          prod.nota || ''
         ];
         sheet.appendRow(fila);
       }
     });
-    
+
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       idPedido: idPedido,
-      total: data.total
+      total: totalPedido
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
@@ -133,15 +154,19 @@ function doPost(e) {
 function getPedidosAgrupados() {
   const sheet = getSheet();
   const data = sheet.getDataRange().getValues();
-  
+
   // Saltar cabecera
   const filas = data.slice(1);
-  
+
   const pedidos = {};
-  
+
   filas.forEach(fila => {
     const idPedido = fila[COL_ID_PEDIDO];
-    
+
+    if (!idPedido) {
+      return;
+    }
+
     if (!pedidos[idPedido]) {
       pedidos[idPedido] = {
         idPedido: idPedido,
@@ -159,17 +184,18 @@ function getPedidosAgrupados() {
         total: 0
       };
     }
-    
+
     pedidos[idPedido].productos.push({
       producto: fila[COL_PRODUCTO],
       cantidad: fila[COL_CANTIDAD],
       precioUnitario: fila[COL_P_UNIT],
-      subtotal: fila[COL_TOTAL]
+      subtotal: fila[COL_TOTAL],
+      nota: fila[COL_NOTA_PRODUCTO]
     });
-    
-    pedidos[idPedido].total += fila[COL_TOTAL];
+
+    pedidos[idPedido].total += Number(fila[COL_TOTAL]) || 0;
   });
-  
+
   return Object.values(pedidos);
 }
 
@@ -177,11 +203,15 @@ function getPedidosAgrupados() {
  * Actualiza estado de pago y pedido para un ID específico
  */
 function actualizarEstado(idPedido, estadoPago, estadoPedido) {
+  if (!idPedido) {
+    throw new Error('ID de pedido requerido');
+  }
+
   const sheet = getSheet();
   const data = sheet.getDataRange().getValues();
-  
+
   let actualizadas = 0;
-  
+
   // Empezar desde fila 2 (saltar cabecera)
   for (let i = 1; i < data.length; i++) {
     if (data[i][COL_ID_PEDIDO] === idPedido) {
@@ -194,7 +224,7 @@ function actualizarEstado(idPedido, estadoPago, estadoPedido) {
       actualizadas++;
     }
   }
-  
+
   return { success: true, actualizadas: actualizadas };
 }
 
