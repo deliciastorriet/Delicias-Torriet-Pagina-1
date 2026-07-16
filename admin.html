@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delicias Torriet - Panel Admin</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --turquesa: #248176;
+      --turquesa-dark: #1a6157;
+      --turquesa-deep: #163f38;
+      --turquesa-glow: #3ba294;
+      --dorado: #eb8a13;
+      --dorado-dark: #d4760a;
+      --dorado-light: #f5a942;
+      --gris-claro: #F1F5F9;
+      --gris-medio: #64748B;
+      --gris-oscuro: #1E293B;
+      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.9);
+      --glass-blur: 24px;
+      --glass-shadow: 0 8px 32px rgba(36, 129, 118, 0.1);
+      --sombra-suave: 0 2px 12px rgba(36, 129, 118, 0.08);
+      --sombra-media: 0 8px 30px rgba(36, 129, 118, 0.12);
+      --sombra-fuerte: 0 12px 40px rgba(36, 129, 118, 0.18);
+      --radio: 16px;
+      --radio-sm: 10px;
+      --transicion: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      background: linear-gradient(160deg, #e8f5f3 0%, #d4f0ed 30%, #b8e6df 60%, #9dd8cd 100%);
+      color: var(--gris-oscuro);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(36,129,118,0.15), transparent 70%);
+      top: -120px; right: -120px;
+      animation: blobFloat1 22s ease-in-out infinite;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(235,138,19,0.1), transparent 70%);
+      bottom: -100px; left: -100px;
+      animation: blobFloat2 28s ease-in-out infinite;
+    }
+    @keyframes blobFloat1 {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(-60px, 40px) scale(1.1); }
+      66% { transform: translate(30px, -30px) scale(0.95); }
+    }
+    @keyframes blobFloat2 {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(50px, -40px) scale(1.15); }
+      66% { transform: translate(-40px, 20px) scale(0.9); }
+    }
+
+    /* HEADER */
+    .admin-header {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border-bottom: 1px solid var(--glass-border);
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--sombra-suave);
+    }
+    .admin-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--turquesa), var(--turquesa-glow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .admin-header .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radio-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transicion);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.2px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--dorado), var(--dorado-dark));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(235,138,19,0.3);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.8);
+      color: var(--turquesa-dark);
+      border: 1px solid rgba(36,129,118,0.15);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-media);
+    }
+    .btn:active { transform: translateY(0); }
+
+    /* TOP FILTER BAR */
+    .filter-bar {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border-bottom: 1px solid var(--glass-border);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 72px;
+      z-index: 90;
+    }
+    .filter-bar .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      border: 1.5px solid rgba(36,129,118,0.12);
+      border-radius: 100px;
+      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+      background: rgba(255,255,255,0.6);
+      transition: all var(--transicion);
+      color: var(--gris-oscuro);
+    }
+    .filter-bar .search-input:focus {
+      outline: none;
+      border-color: var(--turquesa);
+      box-shadow: 0 0 0 3px rgba(36,129,118,0.1);
+      background: #fff;
+    }
+    .filter-bar select {
+      padding: 10px 14px;
+      border: 1.5px solid rgba(36,129,118,0.12);
+      border-radius: var(--radio-sm);
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      background: rgba(255,255,255,0.6);
+      color: var(--gris-oscuro);
+      cursor: pointer;
+      transition: all var(--transicion);
+    }
+    .filter-bar select:focus {
+      outline: none;
+      border-color: var(--turquesa);
+      box-shadow: 0 0 0 3px rgba(36,129,118,0.1);
+      background: #fff;
+    }
+
+    /* VIEW TOGGLE */
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      background: rgba(36,129,118,0.06);
+      padding: 4px;
+      border-radius: 100px;
+    }
+    .view-toggle button {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transicion);
+      background: transparent;
+      color: var(--gris-medio);
+      font-family: 'Inter', sans-serif;
+    }
+    .view-toggle button.active {
+      background: linear-gradient(135deg, var(--turquesa), var(--turquesa-glow));
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(36,129,118,0.2);
+    }
+
+    /* MAIN */
+    .orders-main { padding: 28px 32px; position: relative; z-index: 1; }
+    .orders-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .orders-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      color: var(--turquesa-deep);
+    }
+    .orders-count {
+      background: linear-gradient(135deg, var(--turquesa), var(--turquesa-glow));
+      color: #fff;
+      padding: 5px 16px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(36,129,118,0.25);
+    }
+
+    /* ORDER CARDS - EMAIL STYLE */
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .order-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra-suave);
+      overflow: hidden;
+      transition: all var(--transicion);
+      border-left: 4px solid transparent;
+    }
+    .order-card:hover {
+      box-shadow: var(--sombra-media);
+      transform: translateY(-1px);
+    }
+    .order-card.highlight-pending {
+      border-left-color: var(--dorado);
+      background: rgba(235,138,19,0.04);
+    }
+    .order-card.highlight-new {
+      border-left-color: var(--turquesa-glow);
+      background: rgba(59,162,148,0.05);
+    }
+    .order-card.status-entregado { opacity: 0.65; }
+
+    .order-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      cursor: default;
+    }
+    .order-header-item { display: flex; flex-direction: column; min-width: 0; }
+    .order-header-item label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gris-medio);
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+    .order-header-item span { font-weight: 600; font-size: 0.88rem; color: var(--gris-oscuro); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .order-id {
+      font-size: 0.95rem;
+      color: var(--turquesa-dark);
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .order-customer { flex: 1; min-width: 120px; }
+    .order-total { font-weight: 700; color: var(--turquesa-deep); }
+
+    /* STATUS BADGES */
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+      letter-spacing: 0.2px;
+    }
+    .status-pago-pendiente { background: rgba(235,138,19,0.12); color: var(--dorado-dark); }
+    .status-pago-pagado { background: rgba(36,129,118,0.12); color: var(--turquesa-dark); }
+    .status-pedido-recibido { background: rgba(59,162,148,0.12); color: var(--turquesa-glow); }
+    .status-pedido-enproceso { background: rgba(245,169,66,0.15); color: var(--dorado-dark); }
+    .status-pedido-listo { background: rgba(36,129,118,0.15); color: var(--turquesa-dark); }
+    .status-pedido-entregado { background: rgba(100,116,139,0.12); color: var(--gris-medio); }
+
+    /* ORDER BODY - ALWAYS VISIBLE */
+    .order-body { padding: 0 20px 16px; }
+
+    .products-list {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(36,129,118,0.08);
+    }
+    .products-list h4 {
+      color: var(--turquesa-dark);
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    .product-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(36,129,118,0.04);
+      font-size: 0.86rem;
+    }
+    .product-item:last-child { border-bottom: none; }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .detail-item label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gris-medio);
+      margin-bottom: 2px;
+      display: block;
+      font-weight: 500;
+    }
+    .detail-item span { font-weight: 500; font-size: 0.86rem; }
+
+    .order-controls {
+      background: rgba(36,129,118,0.04);
+      padding: 14px 16px;
+      border-radius: var(--radio-sm);
+      display: flex;
+      gap: 12px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+    .control-group { flex: 1; min-width: 140px; }
+    .control-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      color: var(--turquesa-dark);
+    }
+    .control-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid rgba(36,129,118,0.12);
+      border-radius: var(--radio-sm);
+      font-size: 0.84rem;
+      font-family: 'Inter', sans-serif;
+      background: rgba(255,255,255,0.7);
+      transition: all var(--transicion);
+      color: var(--gris-oscuro);
+    }
+    .control-group select:focus {
+      outline: none;
+      border-color: var(--turquesa);
+      box-shadow: 0 0 0 3px rgba(36,129,118,0.1);
+      background: #fff;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, var(--turquesa), var(--turquesa-glow));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(36,129,118,0.25);
+    }
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25D366, #1da851);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37,211,102,0.25);
+    }
+
+    /* CALENDAR VIEW */
+    .calendar-view { display: none; }
+    .calendar-view.active { display: block; }
+    .list-view.hidden { display: none; }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .calendar-header h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--turquesa-deep);
+      letter-spacing: -0.5px;
+    }
+    .calendar-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .calendar-nav button {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid rgba(36,129,118,0.12);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--turquesa-dark);
+      transition: all var(--transicion);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .calendar-nav button:hover {
+      background: var(--turquesa);
+      color: #fff;
+      border-color: var(--turquesa);
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .calendar-day-name {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gris-medio);
+      padding: 8px 4px;
+    }
+    .calendar-cell {
+      min-height: 100px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radio-sm);
+      padding: 8px;
+      overflow-y: auto;
+      transition: all var(--transicion);
+    }
+    .calendar-cell.empty { background: rgba(255,255,255,0.3); border-color: transparent; }
+    .calendar-cell.today { border-color: var(--turquesa); border-width: 2px; }
+    .calendar-cell:hover { box-shadow: var(--sombra-suave); }
+    .calendar-cell .day-number {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gris-oscuro);
+      margin-bottom: 4px;
+    }
+    .calendar-cell.empty .day-number { color: var(--gris-medio); opacity: 0.4; }
+    .calendar-event {
+      background: linear-gradient(135deg, rgba(36,129,118,0.1), rgba(59,162,148,0.08));
+      border-left: 3px solid var(--turquesa);
+      border-radius: 6px;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all var(--transicion);
+    }
+    .calendar-event:hover { background: rgba(36,129,118,0.15); transform: translateX(2px); }
+    .calendar-event.delivery { border-left-color: var(--dorado); background: linear-gradient(135deg, rgba(235,138,19,0.1), rgba(245,169,66,0.06)); }
+    .calendar-event .event-title { font-weight: 600; color: var(--gris-oscuro); }
+    .calendar-event .event-info { color: var(--gris-medio); font-size: 0.7rem; }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--gris-medio);
+    }
+    .empty-state h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 600; color: var(--gris-oscuro); }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--gris-medio);
+      font-size: 0.95rem;
+    }
+    .loading::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 32px;
+      margin: 16px auto 0;
+      border: 3px solid rgba(36,129,118,0.15);
+      border-top-color: var(--turquesa);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 24px;
+      border-radius: var(--radio-sm);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.88rem;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all var(--transicion);
+      box-shadow: var(--sombra-media);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: linear-gradient(135deg, var(--turquesa), var(--turquesa-glow)); }
+    .toast.error { background: linear-gradient(135deg, #e53935, #c62828); }
+
+    @media (max-width: 768px) {
+      .admin-header { flex-direction: column; text-align: center; }
+      .filter-bar { flex-direction: column; align-items: stretch; }
+      .filter-bar .search-input { min-width: auto; }
+      .order-header { flex-direction: column; align-items: flex-start; }
+      .order-controls { flex-direction: column; }
+      .calendar-cell { min-height: 70px; }
+      .orders-main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Panel Delicias Torriet</h1>
+    <div class="user-info">
+      <a href="https://docs.google.com/spreadsheets/d/1u8R2W6YT6xlB0hWaytk-xARCOOCjg0M4lSqlRpGbSRc/edit" target="_blank" class="btn btn-secondary">Ver Sheet</a>
+      <a href="https://deliciastorriet.github.io/Delicias-Torriet-Pagina-1/" target="_blank" class="btn btn-primary">Vista publica</a>
+      <button class="btn btn-secondary" onclick="cargarPedidos()">Recargar</button>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre, telefono o ID..." oninput="aplicarFiltros()">
+    <select id="filtroPago" onchange="aplicarFiltros()">
+      <option value="todos">Pago: Todos</option>
+      <option value="pendiente">Pago: Pendiente</option>
+      <option value="pagado">Pago: Pagado</option>
+    </select>
+    <select id="filtroPedido" onchange="aplicarFiltros()">
+      <option value="todos">Estado: Todos</option>
+      <option value="recibido">Recibido</option>
+      <option value="en proceso">En proceso</option>
+      <option value="listo">Listo</option>
+      <option value="entregado">Entregado</option>
+    </select>
+    <select id="orden" onchange="aplicarFiltros()">
+      <option value="recientes">Mas recientes</option>
+      <option value="antiguos">Mas antiguos</option>
+      <option value="pendientes">Pendientes primero</option>
+      <option value="listos">Listos primero</option>
+    </select>
+    <div class="view-toggle">
+      <button class="active" id="btnList" onclick="switchView('list')">Lista</button>
+      <button id="btnCalendar" onclick="switchView('calendar')">Calendario</button>
+    </div>
+  </div>
+
+  <main class="orders-main">
+    <div class="orders-header">
+      <h2>Pedidos</h2>
+      <span class="orders-count" id="ordersCount">0 pedidos</span>
+    </div>
+    <div id="ordersList" class="orders-list list-view">
+      <div class="loading">Cargando pedidos...</div>
+    </div>
+    <div id="calendarView" class="calendar-view">
+      <div class="calendar-header">
+        <h3 id="calendarMonth"></h3>
+        <div class="calendar-nav">
+          <button onclick="changeMonth(-1)">&#8249;</button>
+          <button onclick="goToToday()" style="width:auto;padding:6px 14px;border-radius:100px;font-size:0.8rem;">Hoy</button>
+          <button onclick="changeMonth(1)">&#8250;</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytGAOWoIgvLBQp8YZJ9ykdF3TZE2n6N5G8jcQ8V6l7fONC8ie92CW-4jKVuKHqBwvs/exec';
+    var allPedidos = [];
+    var filteredPedidos = [];
+    var currentView = 'list';
+    var calendarDate = new Date();
+
+    window.onload = function() {
+      cargarPedidos();
+    };
+
+    function cargarPedidos() {
+      document.getElementById('ordersList').innerHTML = '<div class="loading">Cargando pedidos...</div>';
+      jsonpRequest(APPS_SCRIPT_URL + '?action=getPedidos', function(data) {
+        if (data && data.success) {
+          allPedidos = data.pedidos || [];
+          filteredPedidos = allPedidos.slice();
+          document.getElementById('ordersCount').textContent = filteredPedidos.length + ' pedidos';
+          renderView();
+        } else {
+          showError(data && data.error ? data.error : 'Error desconocido');
+        }
+      }, function(errMsg) {
+        showError(errMsg);
+      });
+    }
+
+    function jsonpRequest(url, onSuccess, onError) {
+      var callbackName = 'jsonp_cb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+      var script = document.createElement('script');
+      script.src = url + '&callback=' + callbackName;
+      script.type = 'text/javascript';
+      var timeout = setTimeout(function() {
+        cleanup();
+        if (onError) onError('Tiempo de espera agotado');
+      }, 15000);
+      function cleanup() {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+      window[callbackName] = function(data) {
+        cleanup();
+        onSuccess(data);
+      };
+      script.onerror = function() {
+        cleanup();
+        if (onError) onError('Error de red al cargar pedidos');
+      };
+      document.head.appendChild(script);
+    }
+
+    function showError(msg) {
+      document.getElementById('ordersList').innerHTML =
+        '<div class="empty-state">' +
+        '<h3>Error al cargar pedidos</h3>' +
+        '<p>' + msg + '</p>' +
+        '<button class="btn btn-primary" onclick="cargarPedidos()" style="margin-top:20px;">Reintentar</button>' +
+        '</div>';
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.getElementById('btnList').classList.toggle('active', view === 'list');
+      document.getElementById('btnCalendar').classList.toggle('active', view === 'calendar');
+      document.getElementById('ordersList').classList.toggle('hidden', view !== 'list');
+      document.getElementById('calendarView').classList.toggle('active', view === 'calendar');
+      renderView();
+    }
+
+    function renderView() {
+      if (currentView === 'calendar') {
+        renderCalendar();
+      } else {
+        renderList();
+      }
+    }
+
+    function renderList() {
+      var container = document.getElementById('ordersList');
+
+      if (filteredPedidos.length === 0) {
+        container.innerHTML =
+          '<div class="empty-state">' +
+          '<h3>No hay pedidos</h3>' +
+          '<p>No se encontraron pedidos con los filtros actuales</p>' +
+          '</div>';
+        return;
+      }
+
+      container.innerHTML = filteredPedidos.map(function(pedido) {
+        var pagoClass = (pedido.estadoPago || '').toLowerCase().replace(/ /g, '-');
+        var pedidoClass = (pedido.estadoPedido || '').toLowerCase().replace(/ /g, '-');
+        var isPending = (pedido.estadoPago || '').toLowerCase() === 'pendiente';
+        var isNew = (pedido.estadoPedido || '').toLowerCase() === 'recibido';
+        var isDelivered = (pedido.estadoPedido || '').toLowerCase() === 'entregado';
+
+        var cardClasses = 'order-card';
+        if (isPending) cardClasses += ' highlight-pending';
+        else if (isNew) cardClasses += ' highlight-new';
+        if (isDelivered) cardClasses += ' status-entregado';
+
+        return '<div class="' + cardClasses + '" data-id="' + pedido.idPedido + '">' +
+          '<div class="order-header">' +
+            '<div class="order-header-item"><label>ID</label><span class="order-id">' + pedido.idPedido + '</span></div>' +
+            '<div class="order-header-item order-customer"><label>Cliente</label><span>' + esc(pedido.nombre) + '</span></div>' +
+            '<div class="order-header-item"><label>Telefono</label><span>' + esc(pedido.telefono) + '</span></div>' +
+            '<div class="order-header-item"><label>Entrega</label><span>' + esc(pedido.tipoEntrega) + '</span></div>' +
+            '<div class="order-header-item"><label>Fecha</label><span>' + formatDate(pedido.fecha) + '</span></div>' +
+            '<div class="order-header-item"><label>Pago</label><span class="status-badge status-pago-' + pagoClass + '">' + esc(pedido.estadoPago) + '</span></div>' +
+            '<div class="order-header-item"><label>Estado</label><span class="status-badge status-pedido-' + pedidoClass + '">' + esc(pedido.estadoPedido) + '</span></div>' +
+            '<div class="order-header-item"><label>Total</label><span class="order-total">$' + (pedido.total || 0).toFixed(2) + '</span></div>' +
+          '</div>' +
+          '<div class="order-body">' +
+            '<div class="products-list">' +
+              '<h4>Productos</h4>' +
+              pedido.productos.map(function(prod) {
+                return '<div class="product-item">' +
+                  '<span>' + esc(prod.producto) + ' x' + prod.cantidad + (prod.nota ? ' <em>(' + esc(prod.nota) + ')</em>' : '') + '</span>' +
+                  '<span>$' + (prod.subtotal || 0).toFixed(2) + '</span>' +
+                '</div>';
+              }).join('') +
+            '</div>' +
+            '<div class="order-details">' +
+              '<div class="detail-item"><label>Direccion</label><span>' + esc(pedido.direccion || 'N/A') + '</span></div>' +
+              '<div class="detail-item"><label>Fecha entrega</label><span>' + esc(pedido.fechaEntrega || 'N/A') + '</span></div>' +
+              '<div class="detail-item"><label>Notas</label><span>' + esc(pedido.notas || 'N/A') + '</span></div>' +
+              '<div class="detail-item"><label>Comprobante</label><span>' + (pedido.comprobante ? '<a href="' + esc(pedido.comprobante) + '" target="_blank">Ver</a>' : 'N/A') + '</span></div>' +
+            '</div>' +
+            '<div class="order-controls">' +
+              '<div class="control-group">' +
+                '<label>Pago</label>' +
+                '<select id="pago-' + pedido.idPedido + '">' +
+                  '<option value="Pendiente"' + (pedido.estadoPago === 'Pendiente' ? ' selected' : '') + '>Pendiente</option>' +
+                  '<option value="Pagado"' + (pedido.estadoPago === 'Pagado' ? ' selected' : '') + '>Pagado</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="control-group">' +
+                '<label>Estado</label>' +
+                '<select id="pedido-' + pedido.idPedido + '">' +
+                  '<option value="Recibido"' + (pedido.estadoPedido === 'Recibido' ? ' selected' : '') + '>Recibido</option>' +
+                  '<option value="En proceso"' + (pedido.estadoPedido === 'En proceso' ? ' selected' : '') + '>En proceso</option>' +
+                  '<option value="Listo"' + (pedido.estadoPedido === 'Listo' ? ' selected' : '') + '>Listo</option>' +
+                  '<option value="Entregado"' + (pedido.estadoPedido === 'Entregado' ? ' selected' : '') + '>Entregado</option>' +
+                '</select>' +
+              '</div>' +
+              '<button class="btn btn-whatsapp" onclick="contactarWhatsApp(\'' + pedido.telefono + '\', \'' + pedido.idPedido + '\')">WhatsApp</button>' +
+              '<button class="btn btn-save" onclick="guardarCambios(\'' + pedido.idPedido + '\')">Guardar</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderCalendar() {
+      var year = calendarDate.getFullYear();
+      var month = calendarDate.getMonth();
+      var monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      document.getElementById('calendarMonth').textContent = monthNames[month] + ' ' + year;
+
+      var firstDay = new Date(year, month, 1);
+      var lastDay = new Date(year, month + 1, 0);
+      var startDayOfWeek = firstDay.getDay();
+      var daysInMonth = lastDay.getDate();
+      var today = new Date();
+      today.setHours(0,0,0,0);
+
+      var dayNames = ['Dom','Lun','Mar','Mie','Jue','Vie','Sab'];
+      var html = dayNames.map(function(d) { return '<div class="calendar-day-name">' + d + '</div>'; }).join('');
+
+      for (var i = 0; i < startDayOfWeek; i++) {
+        html += '<div class="calendar-cell empty"><div class="day-number"></div></div>';
+      }
+
+      for (var d = 1; d <= daysInMonth; d++) {
+        var cellDate = new Date(year, month, d);
+        cellDate.setHours(0,0,0,0);
+        var isToday = cellDate.getTime() === today.getTime();
+        var dayOrders = filteredPedidos.filter(function(p) {
+          if (!p.fechaEntrega) return false;
+          var fd = new Date(p.fechaEntrega);
+          fd.setHours(0,0,0,0);
+          return fd.getTime() === cellDate.getTime();
+        });
+
+        var cellClass = 'calendar-cell';
+        if (isToday) cellClass += ' today';
+        if (dayOrders.length === 0) cellClass += ' empty';
+
+        html += '<div class="' + cellClass + '"><div class="day-number">' + d + '</div>';
+        dayOrders.forEach(function(p) {
+          var isDelivery = (p.tipoEntrega || '').toLowerCase() === 'delivery';
+          var evClass = 'calendar-event' + (isDelivery ? ' delivery' : '');
+          html += '<div class="' + evClass + '" onclick="scrollToOrder(\'' + p.idPedido + '\')">' +
+            '<div class="event-title">' + esc(p.nombre) + '</div>' +
+            '<div class="event-info">' + (p.productos.length) + ' items - $' + (p.total || 0).toFixed(2) + '</div>' +
+          '</div>';
+        });
+        html += '</div>';
+      }
+
+      document.getElementById('calendarGrid').innerHTML = html;
+    }
+
+    function scrollToOrder(id) {
+      switchView('list');
+      setTimeout(function() {
+        var el = document.querySelector('[data-id="' + id + '"]');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.style.boxShadow = '0 0 0 3px var(--turquesa)';
+          setTimeout(function() { el.style.boxShadow = ''; }, 2000);
+        }
+      }, 100);
+    }
+
+    function changeMonth(dir) {
+      calendarDate.setMonth(calendarDate.getMonth() + dir);
+      renderCalendar();
+    }
+
+    function goToToday() {
+      calendarDate = new Date();
+      renderCalendar();
+    }
+
+    function aplicarFiltros() {
+      var search = document.getElementById('searchInput').value.toLowerCase();
+      var filtroPago = document.getElementById('filtroPago').value;
+      var filtroPedido = document.getElementById('filtroPedido').value;
+      var orden = document.getElementById('orden').value;
+
+      filteredPedidos = allPedidos.filter(function(pedido) {
+        var matchSearch = !search ||
+          (pedido.nombre || '').toLowerCase().includes(search) ||
+          (pedido.telefono || '').includes(search) ||
+          (pedido.idPedido || '').toLowerCase().includes(search);
+
+        var matchPago = filtroPago === 'todos' ||
+          (pedido.estadoPago || '').toLowerCase() === filtroPago;
+
+        var matchPedido = filtroPedido === 'todos' ||
+          (pedido.estadoPedido || '').toLowerCase() === filtroPedido;
+
+        return matchSearch && matchPago && matchPedido;
+      });
+
+      filteredPedidos.sort(function(a, b) {
+        switch (orden) {
+          case 'recientes': return new Date(b.fecha) - new Date(a.fecha);
+          case 'antiguos': return new Date(a.fecha) - new Date(b.fecha);
+          case 'pendientes': return (a.estadoPago === 'Pendiente' ? -1 : 1) - (b.estadoPago === 'Pendiente' ? -1 : 1);
+          case 'listos': return (a.estadoPedido === 'Listo' ? -1 : 1) - (b.estadoPedido === 'Listo' ? -1 : 1);
+          default: return 0;
+        }
+      });
+
+      document.getElementById('ordersCount').textContent = filteredPedidos.length + ' pedidos';
+      renderView();
+    }
+
+    function guardarCambios(idPedido) {
+      var estadoPago = document.getElementById('pago-' + idPedido).value;
+      var estadoPedido = document.getElementById('pedido-' + idPedido).value;
+
+      var body = JSON.stringify({
+        action: 'actualizarEstado',
+        idPedido: idPedido,
+        estadoPago: estadoPago,
+        estadoPedido: estadoPedido
+      });
+
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: body
+      })
+        .then(function() {
+          showToast('Cambios guardados', 'success');
+          setTimeout(cargarPedidos, 1500);
+        })
+        .catch(function(err) {
+          showToast('Error: ' + err.toString(), 'error');
+        });
+    }
+
+    function contactarWhatsApp(telefono, idPedido) {
+      var mensaje = 'Hola, tu pedido ' + idPedido + ' de Delicias Torriet tiene una actualizacion.';
+      var url = 'https://wa.me/' + telefono + '?text=' + encodeURIComponent(mensaje);
+      window.open(url, '_blank');
+    }
+
+    function showToast(msg, type) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(function() {
+        toast.className = 'toast ' + type;
+      }, 3000);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      var date = new Date(dateString);
+      return date.toLocaleDateString('es-PA', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function esc(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>
