@@ -623,9 +623,7 @@
       jsonpRequest(APPS_SCRIPT_URL + '?action=getPedidos', function(data) {
         if (data && data.success) {
           allPedidos = data.pedidos || [];
-          filteredPedidos = allPedidos.slice();
-          document.getElementById('ordersCount').textContent = filteredPedidos.length + ' pedidos';
-          renderView();
+          aplicarFiltros();
         } else {
           showError(data && data.error ? data.error : 'Error desconocido');
         }
