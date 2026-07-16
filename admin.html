@@ -422,7 +422,7 @@
     <div class="user-info">
       <span class="email" id="userEmail"></span>
       <a href="https://docs.google.com/spreadsheets/d/1u8R2W6YT6xlB0hWaytk-xARCOOCjg0M4lSqlRpGbSRc/edit" target="_blank" class="btn btn-secondary">Ver Sheet</a>
-      <a href="?view=public" class="btn btn-primary">Vista pública</a>
+      <a href="https://deliciastorriet.github.io/Delicias-Torriet-Pagina-1/" target="_blank" class="btn btn-primary">Vista pública</a>
     </div>
   </header>
 
@@ -500,15 +500,12 @@
     };
 
     // Load orders from Apps Script
-    async function cargarPedidos() {
-      try {
-        const response = await google.script.run
-          .withSuccessHandler(renderPedidos)
-          .withFailureHandler(handleError)
-          .getPedidosAgrupados();
-      } catch (error) {
-        handleError(error);
-      }
+    function cargarPedidos() {
+      document.getElementById('ordersList').innerHTML = '<div class="loading">Cargando pedidos...</div>';
+      google.script.run
+        .withSuccessHandler(renderPedidos)
+        .withFailureHandler(handleError)
+        .getPedidosAgrupados();
     }
 
     // Handle errors
@@ -700,23 +697,19 @@
     }
 
     // Save changes
-    async function guardarCambios(idPedido) {
+    function guardarCambios(idPedido) {
       const estadoPago = document.getElementById(`pago-${idPedido}`).value;
       const estadoPedido = document.getElementById(`pedido-${idPedido}`).value;
 
-      try {
-        await google.script.run
-          .withSuccessHandler(() => {
-            alert('Cambios guardados exitosamente');
-            cargarPedidos();
-          })
-          .withFailureHandler((error) => {
-            alert('Error al guardar: ' + error.message);
-          })
-          .actualizarEstado(idPedido, estadoPago, estadoPedido);
-      } catch (error) {
-        alert('Error: ' + error.message);
-      }
+      google.script.run
+        .withSuccessHandler(function() {
+          alert('Cambios guardados exitosamente');
+          cargarPedidos();
+        })
+        .withFailureHandler(function(error) {
+          alert('Error al guardar: ' + error.message);
+        })
+        .actualizarEstado(idPedido, estadoPago, estadoPedido);
     }
 
     // Contact via WhatsApp
