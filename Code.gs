@@ -114,25 +114,30 @@ function doPost(e) {
         totalPedido += subtotal;
 
         const fila = [
-          fecha,
-          idPedido,
-          data.nombre || '',
-          data.telefono || '',
-          prod.nombre,
-          qty,
-          qty,
-          precioUnit,
-          subtotal,
-          data.tipoEntrega || '',
-          data.direccion || '',
-          data.fechaEntrega || '',
-          data.notas || '',
-          'Pendiente',
-          'Recibido',
-          data.comprobante || '',
-          prod.nota || ''
+          fecha,               // 0  Fecha
+          idPedido,            // 1  ID Pedido
+          data.nombre || '',   // 2  Nombre
+          data.telefono || '', // 3  Tel
+          prod.nombre,         // 4  Producto
+          qty,                 // 5  Cantidad
+          qty,                 // 6  Uds
+          precioUnit,          // 7  P.Unit
+          subtotal,            // 8  Total
+          data.tipoEntrega || '',  // 9  Tipo de Entrega
+          data.direccion || '',    // 10 Direccion
+          data.fechaEntrega || '', // 11 Fecha de Entrega
+          data.notas || '',        // 12 Notas
+          'Pendiente',             // 13 Estado del pago
+          'Recibido',              // 14 Estado del pedido
+          data.comprobante || '',  // 15 Comprobante de pago
+          prod.nota || ''          // 16 Nota producto
         ];
-        sheet.appendRow(fila);
+
+        Logger.log('Fila a escribir: ' + JSON.stringify(fila));
+        Logger.log('Numero de elementos: ' + fila.length);
+
+        const lastRow = sheet.getLastRow();
+        sheet.getRange(lastRow + 1, 1, 1, 17).setValues([fila]);
       }
     });
 
