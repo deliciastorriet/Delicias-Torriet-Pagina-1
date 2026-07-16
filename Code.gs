@@ -12,16 +12,17 @@ const COL_NOMBRE = 2;
 const COL_TEL = 3;
 const COL_PRODUCTO = 4;
 const COL_CANTIDAD = 5;
-const COL_P_UNIT = 6;
-const COL_TOTAL = 7;
-const COL_TIPO_ENTREGA = 8;
-const COL_DIRECCION = 9;
-const COL_FECHA_ENTREGA = 10;
-const COL_NOTAS = 11;
-const COL_ESTADO_PAGO = 12;
-const COL_ESTADO_PEDIDO = 13;
-const COL_COMPROBANTE = 14;
-const COL_NOTA_PRODUCTO = 15;
+const COL_UDS = 6;
+const COL_P_UNIT = 7;
+const COL_TOTAL = 8;
+const COL_TIPO_ENTREGA = 9;
+const COL_DIRECCION = 10;
+const COL_FECHA_ENTREGA = 11;
+const COL_NOTAS = 12;
+const COL_ESTADO_PAGO = 13;
+const COL_ESTADO_PEDIDO = 14;
+const COL_COMPROBANTE = 15;
+const COL_NOTA_PRODUCTO = 16;
 
 /**
  * Sirve la vista pública o admin según parámetro view
@@ -34,7 +35,7 @@ function doGet(e) {
   }
 
   // Frontend está en GitHub Pages — redirigir allí
-  return HtmlService.createHtmlOutput('<meta http-equiv="refresh" content="0;url=https://deliciastorriet.github.io/Delicias-Torriet-Pagina-1/public.html">')
+  return HtmlService.createHtmlOutput('<meta http-equiv="refresh" content="0;url=https://deliciastorriet.github.io/Delicias-Torriet-Pagina-1/">')
     .setTitle('Delicias Torriet');
 }
 
@@ -118,6 +119,7 @@ function doPost(e) {
           data.nombre || '',
           data.telefono || '',
           prod.nombre,
+          qty,
           qty,
           precioUnit,
           subtotal,
